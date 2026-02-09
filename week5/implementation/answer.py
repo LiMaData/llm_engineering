@@ -15,7 +15,7 @@ DB_NAME = str(Path(__file__).parent.parent / "vector_db")
 
 # embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-RETRIEVAL_K = 10
+RETRIEVAL_K = 10 # How many chunks to retrieve
 
 SYSTEM_PROMPT = """
 You are a knowledgeable, friendly assistant representing the company Insurellm.
@@ -55,7 +55,7 @@ def answer_question(question: str, history: list[dict] = []) -> tuple[str, list[
     context = "\n\n".join(doc.page_content for doc in docs)
     system_prompt = SYSTEM_PROMPT.format(context=context)
     messages = [SystemMessage(content=system_prompt)]
-    messages.extend(convert_to_messages(history))
+    messages.extend(convert_to_messages(history)) #Convert LLM style messages to LangChain style messages
     messages.append(HumanMessage(content=question))
     response = llm.invoke(messages)
     return response.content, docs
